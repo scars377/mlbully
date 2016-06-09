@@ -1,31 +1,27 @@
 style = require './vote.styl'
-VoteItem = require '../VoteItem'
-Comment = require '../Comment'
-Head = require '../Head'
+{scx} = require 'utils'
+
+VoteItem = ({id, select, selected})->
+	className = scx style,{
+		'item'
+		"item--wide": id is 10
+		"item--selected": selected
+	}
+	<div className={className} onClick={->select id}>
+		<span>{id}</span>
+	</div>
 
 
-Vote = ({voteIdx,votes,setVote})->
-	{selected,comment} = vote = votes[voteIdx] ? {selected:-1,comment:''}
-
+Vote = ({vote,setVote})->
 	<div className={style.vote}>
-
-		<Head voteIdx={voteIdx} empty={!votes[voteIdx]?} />
-
-		<div className={style.items}>
-			{for i in [0..10]
-				<VoteItem
-					key = {"item#{i}"}
-					id = {i}
-					select = {(selected)->setVote voteIdx,{selected,comment}}
-					selected = {i is selected}
-				/>
-			}
-		</div>
-
-		<Comment
-			comment = {comment}
-			setComment = {(comment)->setVote voteIdx,{selected,comment}}
-		/>
+		{for i in [0..10]
+			props =
+				key: "item#{i}"
+				id: i
+				select: setVote
+				selected: i is vote
+			<VoteItem {...props}/>
+		}
 	</div>
 
 

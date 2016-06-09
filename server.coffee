@@ -1,5 +1,6 @@
 port = 3000
-ip = '192.168.253.151'
+ip = 'localhost'
+# ip = '192.168.253.151'
 
 express = require 'express'
 app = express()
@@ -9,15 +10,27 @@ io = require('socket.io')(server)
 app.use express.static 'dist'
 
 votes = {}
+boards = {}
+data = (0 for i in [0..10])
+
 io.on 'connect',(socket)->
 	id = socket.id.replace '#/',''
 
-	socket.on 'select',(i)->
-		votes[id] = i
+	socket.on 'setboard',->
+		boards[id] = socket
+		socket.emit 'votes',data
 
-		scores = (score for _,score of votes)
-		len = scores.length
-		avg = scores.reduce ((a,b)->a + b/len),0
+		socket.on 'disconnect',->
+			delete boards[id]
 
-		console.log {len,avg}
-		io.emit 'state', {len, avg}
+	socket.on 'getvote',(fbid)->
+		socket.emit 'voteget',votes[fbid]
+
+	socket.on 'vote',(fbid,vote)->
+		votes[fbid] = vote
+
+		data[i] = 0  for i in [0..10]
+		data[v] += 1 for _,v of votes
+
+		for _,board of boards
+			board.emit 'votes',data

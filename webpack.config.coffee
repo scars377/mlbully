@@ -151,8 +151,8 @@ config.module =
 
 
 # https://github.com/ai/browserslist#queries
-# browsers = ['last 2 versions']
-browsers = []
+browsers = ['last 2 chrome versions']
+# browsers = []
 config.postcss = -> [
 	require('autoprefixer') {browsers}
 	require('doiuse') {browsers}

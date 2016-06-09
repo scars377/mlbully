@@ -23,7 +23,8 @@ class Top extends React.Component
 	loginResponse:({status,authResponse})=>
 		if status is 'connected'
 			{userID,accessToken} = authResponse
-			@props.setFB {userID,accessToken}
+			@props.setFB userID
+			# @props.setFB {userID,accessToken}
 		else
 			@setState {loading:false, logged:false}
 

@@ -5,25 +5,35 @@ Vote = require './Vote'
 
 class Client extends React.Component
 	state:
-		fb: {}
-		votes: []
-		voteIdx: 0
+		fbid: null
+		vote: null
+		socket: false
 
-	setVote:(voteIdx,vote)=>
-		votes = @state.votes.concat()
-		votes[voteIdx] = vote
-		@setState {votes,voteIdx}
+	constructor:->
+		@socket = io()
+		@socket.on 'connect',=>@setState socket:true
+		@socket.on 'voteget',@voteGet
+
+	setFB:(fbid)=>
+		@setState {fbid}
+		@socket.emit 'getvote',fbid
+
+	voteGet:(vote)=>
+		@setState {vote}
+
+	setVote:(vote)=>
+		@setState {vote}
+		@socket.emit 'vote',@state.fbid,vote
+
 
 	render:->
 		<div className={style.client}>
-			{if @state.fb?
-				<Vote
-					voteIdx = {@state.voteIdx}
-					votes = {@state.votes}
-					setVote = {@setVote}
-				/>
+			{if !@state.socket?
+				null
+			else if !@state.fbid
+				<Top setFB={@setFB}/>
 			else
-				<Top setFB={(fb)=>@setState {fb}}/>
+				<Vote vote={@state.vote} setVote={@setVote}/>
 			}
 		</div>
 
