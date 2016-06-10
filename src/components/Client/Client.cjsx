@@ -11,7 +11,7 @@ class Client extends React.Component
 		socket: false
 
 	setupSocket:=>
-		@socket = io()
+		@socket = io 'http://220.128.166.88',{path:'/mlbully/socket.io'}
 		@socket.on 'connect',@getVote
 		@socket.on 'teamset',@getVote
 		@socket.on 'voteget',@voteGet

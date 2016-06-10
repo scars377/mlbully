@@ -5,7 +5,7 @@ port = 4002
 express = require 'express'
 app = express()
 server = app.listen port,->console.log 'server start'
-io = require('socket.io')(server)
+io = require('socket.io')(server,{path:'/mlbully/socket.io'})
 fs = require 'fs'
 
 {votes={},team=-1} = require './save.json'
@@ -19,12 +19,9 @@ save = ->
 	saveTimer = setTimeout doSave,3000
 
 
-
-
 board = null
-
-app.use express.static 'dist'
-app.use '/b',(r,s)->s.redirect '/board.html'
+# app.use '/mlbully',express.static 'dist'
+# app.use '/mlbully/b',(r,s)->s.redirect '/mlbully/board.html'
 
 io.on 'connect',(socket)->
 	id = socket.id.replace '#/',''

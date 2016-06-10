@@ -13,8 +13,7 @@ class Board extends React.Component
 		votes: {}
 
 	componentDidMount: ->
-		@socket = io()
-
+		@socket = io 'http://220.128.166.88',{path:'/mlbully/socket.io'}
 		@socket.on 'connect',=>@socket.emit 'setboard'
 		@socket.on 'ready',(team)=>
 			@setState {connected: true},=>@teamSet team
