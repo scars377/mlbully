@@ -4,7 +4,6 @@ style = require './vote.styl'
 VoteItem = ({id, select, selected})->
 	className = scx style,{
 		'item'
-		"item--wide": id is 10
 		"item--selected": selected
 	}
 	<div className={className} onClick={->select id}>
@@ -12,8 +11,14 @@ VoteItem = ({id, select, selected})->
 	</div>
 
 
-Vote = ({vote,setVote})->
+Vote = ({team,vote,setVote,click})->
+	t = if team is -1 then '-' else team
+
 	<div className={style.vote}>
+		<div className={style.team} onMouseDown={click}>
+			<span>{t}</span>
+		</div>
+
 		{for i in [0..10]
 			props =
 				key: "item#{i}"

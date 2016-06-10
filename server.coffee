@@ -6,31 +6,64 @@ express = require 'express'
 app = express()
 server = app.listen port,ip,->console.log 'server start'
 io = require('socket.io')(server)
+fs = require 'fs'
+
+{votes={},team=-1} = require './save.json'
+saveTimer = null
+
+doSave = ->
+	fs.writeFile './save.json',JSON.stringify {votes,team},null,'\t','utf8'
+
+save = ->
+	clearTimeout saveTimer
+	saveTimer = setTimeout doSave,3000
+
+
+
+
+board = null
 
 app.use express.static 'dist'
-
-votes = {}
-boards = {}
-data = (0 for i in [0..10])
+app.use '/b',(r,s)->s.redirect '/board.html'
 
 io.on 'connect',(socket)->
 	id = socket.id.replace '#/',''
 
 	socket.on 'setboard',->
-		boards[id] = socket
-		socket.emit 'votes',data
+		return if board?
+
+		board = socket
+		socket.emit 'ready',team
 
 		socket.on 'disconnect',->
-			delete boards[id]
+			board = null
 
-	socket.on 'getvote',(fbid)->
-		socket.emit 'voteget',votes[fbid]
+		socket.on 'setteam',(i)->
+			team = i
+			io.emit 'teamset',team
+			save()
 
-	socket.on 'vote',(fbid,vote)->
-		votes[fbid] = vote
+	socket.on 'getvote',(fbid,teamid)->
+		if fbid is 0
+			data = (0 for i in [0..10])
+			data[v] += 1 for _,v of votes[teamid] ? {}
+			board?.emit 'voteget',teamid,data
 
-		data[i] = 0  for i in [0..10]
-		data[v] += 1 for _,v of votes
+		else
+			socket.emit 'voteget',team,votes[team]?[fbid]
 
-		for _,board of boards
-			board.emit 'votes',data
+
+	socket.on 'setvote',(teamid,fbid,vote)->
+		return if teamid is -1
+
+		votes[teamid] ?= {}
+		votes[teamid][fbid] = vote
+
+		data = (0 for i in [0..10])
+		data[v] += 1 for _,v of votes[teamid]
+		board?.emit 'voteget',teamid,data
+
+		save()
+
+	socket.on 'click',->
+		board?.emit 'click'

@@ -6,34 +6,48 @@ Vote = require './Vote'
 class Client extends React.Component
 	state:
 		fbid: null
+		team: -1
 		vote: null
 		socket: false
 
-	constructor:->
+	setupSocket:=>
 		@socket = io()
-		@socket.on 'connect',=>@setState socket:true
+		@socket.on 'connect',@getVote
+		@socket.on 'teamset',@getVote
 		@socket.on 'voteget',@voteGet
 
-	setFB:(fbid)=>
-		@setState {fbid}
-		@socket.emit 'getvote',fbid
+	getVote:=>
+		@socket.emit 'getvote', @state.fbid
 
-	voteGet:(vote)=>
-		@setState {vote}
+	voteGet:(team,vote)=>
+		@setState {team,vote,socket:true}
+
+	setFB:(fbid)=>
+		@setState {fbid},@setupSocket
 
 	setVote:(vote)=>
+		return if @state.team is -1
 		@setState {vote}
-		@socket.emit 'vote',@state.fbid,vote
+		@socket.emit 'setvote',@state.team,@state.fbid,vote
 
+	click:=>
+		@socket.emit 'click'
 
 	render:->
 		<div className={style.client}>
-			{if !@state.socket?
-				null
-			else if !@state.fbid
+			{if !@state.fbid
 				<Top setFB={@setFB}/>
+
+			else if !@state.socket?
+				null
+
 			else
-				<Vote vote={@state.vote} setVote={@setVote}/>
+				<Vote
+					team = {@state.team}
+					vote = {@state.vote}
+					setVote = {@setVote}
+					click = {@click}
+				/>
 			}
 		</div>
 
