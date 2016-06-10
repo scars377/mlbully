@@ -127,7 +127,7 @@ config.module =
 			include: path.resolve 'src/components'
 		}, {
 			test: /\.cjsx$/
-			loaders: ['react-hot', 'coffee-jsx']
+			loaders: 'coffee-jsx'
 			include: path.resolve 'src/components'
 		}, {
 			test: /\.styl$/
