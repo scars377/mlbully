@@ -1,10 +1,10 @@
-port = 3000
-ip = 'localhost'
+port = 4002
+# ip = 'localhost'
 # ip = '192.168.253.151'
 
 express = require 'express'
 app = express()
-server = app.listen port,ip,->console.log 'server start'
+server = app.listen port,->console.log 'server start'
 io = require('socket.io')(server)
 fs = require 'fs'
 
