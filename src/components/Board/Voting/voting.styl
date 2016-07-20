@@ -1,0 +1,91 @@
+.head
+  width  156px
+  height 74px
+  margin 20px auto
+  background url('assets/img/head.png') center center no-repeat
+  background-size contain
+  cursor pointer
+
+.teamname
+  position relative
+  height 32px
+  font-size 32px
+  color #d0f4ff
+  &:before, &:after
+    position relative
+    display inline-block
+    content ''
+    width  16px
+    height 16px
+    margin 0 10px
+    background url('assets/img/star.png')
+    background-size contain
+
+
+.teamimage
+  width  576px
+  height 324px
+  margin 20px auto
+  background center center
+  background-size cover
+  border 4px solid white
+  overflow hidden
+  video
+    width 100%
+    height 100%
+
+.scores
+  position relative
+
+.scoreDown
+.scoreLike
+  position relative
+  display inline-block
+  width  362px
+  height 214px
+  background center center no-repeat
+  background-size contain
+  >*
+    position absolute
+
+pos(x,y)
+  left unit(x,px)
+  top  unit(y,px)
+
+@keyframes down
+  from
+    transform none
+  to
+    transform translateY(4px)
+
+@keyframes up
+  from
+    transform none
+  to
+    transform translateY(-4px)
+
+.scoreDown
+  background-image url('assets/img/b-down-bg.png')
+  &Icon
+    pos 13 88
+    animation down .4s infinite alternate
+  &Word
+    pos 72 94
+  &Num
+    pos 171 74
+    width  170px
+    height 64px
+    font-size 64px
+
+.scoreLike
+  background-image url('assets/img/b-like-bg.png')
+  &Icon
+    pos 300 83
+    animation up .4s infinite alternate
+  &Word
+    pos 212 94
+  &Num
+    pos 24 74
+    width  170px
+    height 64px
+    font-size 64px

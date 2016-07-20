@@ -1,0 +1,44 @@
+wh(w,h)
+	width  unit(w*.5,px)
+	height unit(h*.5,px)
+
+.btn
+	wh 279, 238
+	position relative
+	display inline-block
+	background-repeat no-repeat
+	background-position center top
+	background-size contain
+	margin 0 8px
+	border-radius 10px
+
+	transition background-position .1s ease-in-out;
+
+
+	&.press
+		background-position center top 4px
+
+	&.gray
+		opacity .5
+
+	&:after
+		position absolute
+		content ''
+		background-size contain
+		left 10px
+		top 24px
+		transition transform .1s ease-in-out;
+		.press&
+			transform translateY(4px)
+
+	&-down
+		background-image url('assets/img/btn-down-normal.png')
+		&:after
+			wh 235,133
+			background-image url('assets/img/btn-down.png')
+
+	&-like
+		background-image url('assets/img/btn-like-normal.png')
+		&:after
+			wh 244,135
+			background-image url('assets/img/btn-like.png')

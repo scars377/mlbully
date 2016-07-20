@@ -1,54 +1,81 @@
 style = require './client.styl'
-Top = require './Top'
-Vote = require './Vote'
+Button = require './Button'
 
 
 class Client extends React.Component
-	state:
-		fbid: null
-		team: -1
-		vote: null
-		socket: false
+  state:
+    team: -1
+    vote: 0
+    socket: false
 
-	setupSocket:=>
-		@socket = io 'http://220.128.166.88',{path:'/mlbully/socket.io'}
-		@socket.on 'connect',@getVote
-		@socket.on 'teamset',@getVote
-		@socket.on 'voteget',@voteGet
+  componentWillMount: ->
+    localStorage['id'] ?= @genUID()
+    @clientid = localStorage['id']
 
-	getVote:=>
-		@socket.emit 'getvote', @state.fbid
+    @socket = io require('host'), {path:'/mlbully/socket.io'}
+    @socket.on 'connect',@getVote
+    @socket.on 'teamset',@getVote
+    @socket.on 'voteget',@voteGet
 
-	voteGet:(team,vote)=>
-		@setState {team,vote,socket:true}
+  genUID:(len=16)->
+    s = ''
+    loop
+      s += "#{Math.random()}".substr 2
+      break if s.length>len
+    return s.substr 0,len
 
-	setFB:(fbid)=>
-		@setState {fbid},@setupSocket
+  getVote:=>
+    @socket.emit 'getvote', @clientid
 
-	setVote:(vote)=>
-		return if @state.team is -1
-		@setState {vote}
-		@socket.emit 'setvote',@state.team,@state.fbid,vote
+  voteGet:(team, vote)=>
+    @setState {team, vote, socket:true}
 
-	click:=>
-		@socket.emit 'click'
+  setVote:(vote)=>
+    return if @state.team is -1
+    @setState {vote}
+    @socket.emit 'setvote', @state.team, @clientid, vote
 
-	render:->
-		<div className={style.client}>
-			{if !@state.fbid
-				<Top setFB={@setFB}/>
+  click:=>
+    return if @state.team is -1
+    @socket.emit 'click'
 
-			else if !@state.socket?
-				null
+  render:->
+    teamname = if @state.team is -1
+      "還沒開始投票"
+    else
+      "TEAM#{@state.team}"
 
-			else
-				<Vote
-					team = {@state.team}
-					vote = {@state.vote}
-					setVote = {@setVote}
-					click = {@click}
-				/>
-			}
-		</div>
+    t = @state.team
+    t = '' if t is -1
+    teamimage = require "img/team#{t}.jpg"
+
+    <div className={style.client}>
+      <div className={style.container}>
+        <div className={style.head}/>
+
+        <div className={style.teamname}>
+          {teamname}
+        </div>
+
+        <div className={style.teamimage} onClick={@click}>
+          <img src={teamimage}/>
+        </div>
+
+        <div className={style.btns}>
+          <Button
+            type = 'down'
+            vote = {@state.vote}
+            disabled = {@state.team is -1}
+            onClick = {=>@setVote -1}
+            />
+          <Button
+            type = 'like'
+            vote = {@state.vote}
+            disabled = {@state.team is -1}
+            onClick = {=>@setVote 1}
+            />
+        </div>
+      </div>
+    </div>
 
 module.exports = Client

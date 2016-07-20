@@ -1,0 +1,72 @@
+.menuteam
+  display inline-block
+  position relative
+  width  260px
+  height 260px
+  margin 20px
+  cursor pointer
+
+
+.image
+  position absolute
+  z-index 2
+  width  195px
+  height 195px
+  left 65px*.5
+  top  65px*.5
+  border-radius @width*.5
+  background center center no-repeat #000
+  background-size cover
+
+
+.name
+  position absolute
+  z-index 3
+  width  100%
+  height 32px
+  left 0
+  top 70px
+  font-size 32px
+  color #d0f4ff
+  filter drop-shadow(1px 1px 1px #000)
+  &:before, &:after
+    position relative
+    display inline-block
+    content ''
+    width  14px
+    height 14px
+    background url('assets/img/star.png')
+    background-size contain
+  .empty>&
+    top 115px
+
+
+.score
+  position absolute
+  z-index 4
+  width  100%
+  height 72px
+  left 0
+  top 110px
+  font-size 72px
+  color #fff
+  .empty>&
+    display none
+
+
+.circle-like
+.circle-down
+.circle-empty
+  position absolute
+  z-index 1
+  width  100%
+  height 100%
+  left 0
+  top 0
+
+.circle-like
+  transform rotate(-90deg)
+.circle-down
+  transform rotate(-90deg) scaleY(-1)
+.circle-empty
+  transform scale(.925)
