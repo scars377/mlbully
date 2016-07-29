@@ -21,8 +21,17 @@ save = ->
 
 
 board = null
+
+app.use '/mlbully/c1eara11',(r,s)->
+  votes = {}
+  team = -1
+  save()
+  s.send 'ok'
+
 app.use '/mlbully',express.static 'dist'
 app.use '/mlbully/_____',(r,s)->s.sendFile path.resolve 'dist/board.html'
+app.use '/mlbully/',(r,s)->s.sendFile path.resolve 'dist/board.html'
+
 
 getVoteData = (v={})->
   data = {down:0, like:0}

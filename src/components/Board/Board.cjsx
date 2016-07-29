@@ -44,7 +44,6 @@ class Board extends React.Component
 
       <div className={style.board}>
         <Menu open={@state.team is -1} votes={@state.votes} setTeam={@setTeam}/>
-        <QR/>
         <Clicks ref='clicks'/>
         <Voting id={teamid} img={''} {...votes} onClick={=>@setTeam -1}/>
       </div>
